@@ -1,16 +1,9 @@
 import pygame, sys, random
-
+from bird import Bird
+from pipe import Pipe
+from game import Game
 pygame.init()
 
-# 游戏所需的参数
-gravity = 0.25
-bird_movement = 0
-screen_width = 576
-screen_height = 924
-move_up = 12
-game_active = True
-score = 0
-high_score = 0
 # 游戏背景设置长宽高
 
 screen = pygame.display.set_mode(( screen_width, screen_height))
@@ -80,9 +73,11 @@ def move_pipes(pipes):
 
 def draw_pipes(pipes):
     for pipe in pipes:
+        # 生成朝上的管道
         if pipe.bottom >= screen_height:
             screen.blit(pipe_surface, pipe)
         else:
+            #生成朝下的管道
             flip_pipe = pygame.transform.flip(pipe_surface, False, True)
             screen.blit(flip_pipe, pipe)
 
@@ -123,41 +118,43 @@ def score_display(game_state):
         high_rect = high_surface.get_rect(center=(screen_width // 2, screen_height-200))
         screen.blit(high_surface, high_rect)
 
-while True:
-    # 事件循环
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            pygame.quit()
-            # 关闭while循环
-            sys.exit()
-        # 让小鸟向上飞
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            if game_start == False:
-                game_start = True
 
-            bird_movement = 0
-            bird_movement -= move_up
+# where the game begins
+if __name__ == "__main__":
+    
+    game = new Game()  # initialize Game instance
+    bird = new Bird()  # initialize one bird
+    
+    # Game Logic
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if game.game_start == False:
+                    game.game_start = True
 
-        # 重新开始游戏
-        if event.type == pygame.MOUSEBUTTONDOWN and game_active == False:
-            game_active = True
-            # 如果鸟死亡了 清除所有的绘制
-            pipe_list.clear()
-            bird_rect.center = (100, screen_height // 2)
-            bird_movement = 0
-            score = 0
+                bird.bird_movement = 0
+                bird.bird_movement -= move_up
 
-        if event.type == SPAWNPIPE:
-            if game_start:
-                pipe_list.extend(create_pipe())
+            # restart game
+            if event.type == pygame.MOUSEBUTTONDOWN and game.game_active == False:
+                game.game_active = True
+                pipe_list.clear()
+                bird_rect.center = (100, screen_height // 2)
+                bird_movement = 0
+                score = 0
 
-        if event.type == BIRDFLAP:
-            bird_index += 1
-            bird_index = bird_index % len(bird_frames)
-            bird_surface, bird_rect = bird_animation()
+            if event.type == SPAWNPIPE:
+                if game_start:
+                    pipe_list.extend(create_pipe())
 
-
-  
+            if event.type == BIRDFLAP:
+                bird_index += 1
+                bird_index = bird_index % len(bird_frames)
+                bird_surface, bird_rect = bird_animation()
 
     # 先显示是否开始游戏
     screen.blit(bg_surface, (0, 0))
@@ -171,7 +168,7 @@ while True:
         # 设置重力 小鸟会掉落
         rotated_bird = rotate_bird(bird_surface)
         bird_movement += gravity
-        bird_rect.centery += bird_movement
+        bird_rect.centery += int(bird_movement)
         screen.blit(rotated_bird, bird_rect)
 
         # Pipes
@@ -183,7 +180,7 @@ while True:
         # 计算分数
         score += 0.01
         score_display('main_game')
-    
+
     if game_active == False and game_start:
         if score > high_score:
             high_score = score
