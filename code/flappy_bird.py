@@ -13,6 +13,7 @@ if __name__ == "__main__":
     
     # Game Logic
     while True:
+    
         for event in pygame.event.get():
             if event.type == pygame.QUIT:                  # quit the game
                 pygame.quit()
@@ -44,6 +45,8 @@ if __name__ == "__main__":
                 bird.bird_index += 1
                 bird.bird_index = bird.bird_index % len(bird.bird_frames)
                 bird.bird_surface, bird.bird_rect = bird.bird_animation()
+            
+        
 
         game.screen.blit(game.bg_surface, (0, 0)) # draw background image 
         if game.game_start == False:

@@ -38,7 +38,7 @@ class Game:
 
         self.SPAWNPIPE = pygame.USEREVENT
         self.BIRDFLAP = pygame.USEREVENT + 1
-
+        
         self.floor_height = 124
 
         self.pipe_surface = pygame.image.load("./assets/pipe-green.png").convert()
@@ -71,6 +71,7 @@ class Game:
     def start(self):
         pygame.time.set_timer(self.BIRDFLAP, 200)
         pygame.time.set_timer(self.SPAWNPIPE, 1200)
+      
 
     def draw_floor(self):
         self.floor_x_pos -= 1
