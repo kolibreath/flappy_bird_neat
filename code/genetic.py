@@ -1,4 +1,5 @@
 from bird import Bird
+import pygame
 
 class Genetic :
   
@@ -13,6 +14,13 @@ class Genetic :
             self.pop_list.append(Bird(game))
         return pop_list
 
+    # genetic algorithm frame for one time
+    def run_GA(self):
+        for bird in self.pop_list:
+            if bird.status == False:
+                continue
+            train(bird)
+            
     # fitness function 
     def fitness(self, bird):
         return bird.fitness()
@@ -22,32 +30,35 @@ class Genetic :
     def compute(self, bird):
         return 0
     
-    def train(self, generation):
-        pops = self.init_pop()
-        for i in range(generation):
-            # iterate array
-            for (width_1, height_1, height_2, width_2, height_3, height_4) in pops[i].get_inputs():
-                 width_1_c = width_1.clone().detach().float()
-                 height_1_c = height_1.clone().detach().float()
-                 height_2_c = height_2.clone().detach().float()
+    # train one bird in one generation
+    def train(self, bird):
+        # iterate array
+        (width, height) = bird.get_inputs():
+        width = width.clone().detach().float()
+        height = height.clone().detach().float()
                  
-                 width_2_c = width_2.clone().detach().float()
-                 height_3_c = height_3.clone().detach().float()
-                 height_4_c = height_4.clone().detach().float()
+        output = bird.net(width, height)
                  
-                 output = pops[i].net(width_1_c, height_1_c, height_2_c, width_2_c, height_3_c, height_4_c)
+        l = bird.loss(output, compute(self, bird))
                  
-                 # 只需要一个参数？
-                 l = pops[i].loss(output, compute(self, pops[i]))
-                 
-                 pops[i].optimizer.zero_grad()
-                 l.backward()
-                 pops[i].optimier.step()
-                 
-                 
-    # check if all birds are dead
+        bird.optimizer.zero_grad()
+        l.backward()
+        bird.optimier.step()
+                             
+    # check if all birds are dead and dead birds are not shown in the screen any longer
     def check_dead(self):
         for bird in self.pop_list:
             if bird.status == False:
                 return False
         return True
+
+    # send event to notice a bird should fly up a bit
+    def notice(self, bird_index):
+        flyup = pygame.event.Event(pygame.USEREVENT + 2, index= bird_index)
+        pygame.event.post(flyup)
+   
+    # reset the bird group
+    def reset(self):
+        for b in self.pop_list:
+            b.bird_rect = b.bird_surface.get_rect(center=(100, self.game.screen_height // 2))
+            b.movement = 0

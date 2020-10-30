@@ -34,13 +34,15 @@ class Bird:
         self.bird_movement = 0
         self.bird_frames = [self.bird_downflap, self.bird_midflap, self.bird_upflap]
         self.bird_surface = self.bird_frames[self.bird_index]
+        
         self.bird_rect = self.bird_surface.get_rect(center=(100, game.screen_height // 2))
+        
         self.width = 0  
         self.height = 0
         
         self.fitness = 0
         
-        self.num_inputs, self.num_outputs = 6, 1
+        self.num_inputs, self.num_outputs = 2, 1
         self.num_hiddens = 10
         
         self.net = nn.Sequential(
@@ -62,23 +64,17 @@ class Bird:
         new_bird = pygame.transform.rotozoom(bird, - self.bird_movement * 3, 1)
         return new_bird
 
-
+    # bird flap animation
     def bird_animation(self):
         new_surface = self.bird_frames[self.bird_index]
         new_bird_rect = new_surface.get_rect(center=(100, self.bird_rect.centery))
         return new_surface, new_bird_rect
 
     # todo 
-    # get six input params
+    # get two input params
     def get_inputs(self):
-        width_1 = 0
-        height_1= 0 
-        height_2= 0 
-        width_2 = 0
-        height_3= 0
-        height_4= 0
-        
-        return width_1, height_1, height_2, width_2, height_3, height_4
+        width, height = 0, 0
+        return width, height
 
     # fitness function
     def fitness(self, game):

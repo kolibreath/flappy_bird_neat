@@ -86,9 +86,11 @@ class Game:
     def check_collision(self, pipes, bird):
         for pipe in pipes:
             if bird.bird_rect.colliderect(pipe):
+                bird.status = False
                 return False
 
         if bird.bird_rect.top <= -100 or bird.bird_rect.bottom >= self.screen_height - self.floor_height:
+            bird.status = False
             return False
 
         return True
@@ -130,3 +132,4 @@ class Game:
                 #生成朝下的管道
                 flip_pipe = pygame.transform.flip(self.pipe_surface, False, True)
                 self.screen.blit(flip_pipe, pipe)
+                
