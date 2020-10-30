@@ -2,10 +2,12 @@ from bird import Bird
 
 class Genetic :
   
-    def __init__(self, game):
-        self.pop_size = 10
+    def __init__(self, game, pop_size, generation):
+        self.game = game
+        self.pop_size = pop_size
+        self.generation = generation 
         
-    def init_pop(self, game):
+    def init_pop(self):
         self.pop_list = []
         for i in range(self.pop_size):
             self.pop_list.append(Bird(game))
@@ -20,8 +22,8 @@ class Genetic :
     def compute(self, bird):
         return 0
     
-    def train(self, generation ,game):
-        pops = self.init_pop(game)
+    def train(self, generation):
+        pops = self.init_pop()
         for i in range(generation):
             # iterate array
             for (width_1, height_1, height_2, width_2, height_3, height_4) in pops[i].get_inputs():
@@ -43,4 +45,9 @@ class Genetic :
                  pops[i].optimier.step()
                  
                  
-             
+    # check if all birds are dead
+    def check_dead(self):
+        for bird in self.pop_list:
+            if bird.status == False:
+                return False
+        return True

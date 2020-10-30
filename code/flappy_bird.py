@@ -1,15 +1,17 @@
 import pygame, sys, random
 from bird import Bird
 from game import Game
-
+from genetic import Genetic
 
 # where the game begins
 if __name__ == "__main__":
     
     game = Game()  # initialize Game instance
     game.start()  # set timer
-    bird = Bird(game)  # initialize one bird
+    # bird = Bird(game)  # initialize one bird
     
+    genetic = Genetic(game, pop_size= 10 , generation= 30)
+    birds = genetic.init_pop()
     
     # Game Logic
     while True:
@@ -21,7 +23,8 @@ if __name__ == "__main__":
             if event.type == pygame.MOUSEBUTTONDOWN:       # fly the bird a bit
                 if game.game_start == False:
                     game.game_start = True
-
+                    
+            if event.type == pygame.FLYUP:
                 bird.bird_movement = 0
                 bird.bird_movement -= game.move_up
 
@@ -40,6 +43,7 @@ if __name__ == "__main__":
                 if game.game_start:
                     game.pipe_list.extend(game.create_pipe())
 
+            # birds flap animation
             if event.type == game.BIRDFLAP:
                 bird.bird_index += 1
                 bird.bird_index = bird.bird_index % len(bird.bird_frames)
@@ -61,6 +65,7 @@ if __name__ == "__main__":
             game.pipe_list = game.move_pipes(game.pipe_list)
             game.draw_pipes(game.pipe_list)
 
+            
             game.game_active = game.check_collision(game.pipe_list, bird)
 
             # 计算分数

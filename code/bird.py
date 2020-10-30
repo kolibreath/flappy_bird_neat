@@ -1,4 +1,4 @@
-import pygame
+import pygame, random
 import torch
 import numpy as np
 from torch import nn
@@ -13,11 +13,22 @@ class FlattenLayer(torch.nn.Module):
         return x.view(x.shape[0], -1)
 
 class Bird:
+    birds = [["./assets/bluebird-downflap.png",
+              './assets/bluebird-midflap.png', 
+              './assets/bluebird-upflap.png'],
+             ["./assets/redbird-downflap.png",
+              './assets/redbird-midflap.png',
+              './assets/redbird-upflap.png'], 
+             ["./assets/yellowbird-downflap.png",
+              './assets/yellowbird-midflap.png',
+              './assets/yellowrd-upflap.png']]
     
     def __init__(self, game):
-        self.bird_downflap = pygame.transform.scale2x(pygame.image.load('./assets/bluebird-downflap.png').convert_alpha())
-        self.bird_midflap = pygame.transform.scale2x(pygame.image.load('./assets/bluebird-midflap.png').convert_alpha())
-        self.bird_upflap = pygame.transform.scale2x(pygame.image.load('./assets/bluebird-upflap.png').convert_alpha())
+        self.status = True # is status == True, this bird is alive
+        index = random.choice(birds) # random different birds
+        self.bird_downflap = pygame.transform.scale2x(pygame.image.load(index[0]).convert_alpha())
+        self.bird_midflap = pygame.transform.scale2x(pygame.image.load(index[1]).convert_alpha())
+        self.bird_upflap = pygame.transform.scale2x(pygame.image.load(index[2]).convert_alpha())
         
         self.bird_index = 0
         self.bird_movement = 0
@@ -27,7 +38,7 @@ class Bird:
         self.width = 0  
         self.height = 0
         
-        self.distance = 0
+        self.fitness = 0
         
         self.num_inputs, self.num_outputs = 6, 1
         self.num_hiddens = 10
@@ -69,7 +80,9 @@ class Bird:
         
         return width_1, height_1, height_2, width_2, height_3, height_4
 
-    # todo 
     # fitness function
-    def distance(self):
-        return self.distance
+    def fitness(self, game):
+        self.fitness = game.score
+    
+
+    

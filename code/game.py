@@ -33,12 +33,12 @@ class Game:
 
         self.game_start = False
 
-        self.pop = []    # bird population
         self.pipe_list = []  # pipes 
 
         self.SPAWNPIPE = pygame.USEREVENT
         self.BIRDFLAP = pygame.USEREVENT + 1
-
+        self.FLYUP = pygame.USEREVENT + 2
+        
         self.floor_height = 124
 
         self.pipe_surface = pygame.image.load("./assets/pipe-green.png").convert()
