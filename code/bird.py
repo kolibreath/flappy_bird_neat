@@ -32,17 +32,17 @@ class Bird:
         self.num_inputs, self.num_outputs = 6, 1
         self.num_hiddens = 10
         
-        self.net = nn.Sequential({
+        self.net = nn.Sequential(
             FlattenLayer(),
             nn.Linear(self.num_inputs, self.num_hiddens),
             nn.ReLU(),
-            nn.Linear(self.num_hiddens, self.outputs)
-        })
+            nn.Linear(self.num_hiddens, self.num_outputs)
+        )
         
-        for param in net.parameters():
+        for param in self.net.parameters():
             init.normal_(param, mean=0, std=0.01)
         
-        self.optimizer = torch.optim.SGD(net.parameters(), lr = 0.5)
+        self.optimizer = torch.optim.SGD(self.net.parameters(), lr = 0.5)
         self.loss = torch.nn.CrossEntropyLoss()
     
         
