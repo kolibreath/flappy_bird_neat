@@ -46,11 +46,11 @@ class Genetic :
         bird.optimier.step()
                              
     # check if all birds are dead and dead birds are not shown in the screen any longer
-    def check_dead(self):
-        for bird in self.pop_list:
-            if bird.status == False:
-                return False
-        return True
+    def check_alive(self):
+        alive_birds = []
+        for index, bird in enumerate(self.pop_list):
+            if bird.status:
+                alive_birds.append(index)
 
     # send event to notice a bird should fly up a bit
     def notice(self, bird_index):

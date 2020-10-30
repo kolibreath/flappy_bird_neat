@@ -43,8 +43,8 @@ def handle_events(game, genetic, birds):
                     bird.bird_index = bird.bird_index % len(bird.bird_frames)
                     bird.bird_surface, bird.bird_rect = bird.bird_animation()
 
-# bird rotate animation
-def bird_rotate(game,birds):
+# show where the birds are 
+def display_birds(game,birds):
     for bird in birds:
         rotated_bird = bird.rotate_bird(bird.bird_surface) # set bird animation
         bird.bird_movement += game.gravity                 # bird falling
@@ -78,10 +78,14 @@ if __name__ == "__main__":
 
         # while the birds don't die out
         if game.game_active and game.game_start:
-            bird_rotate(game, birds)
+            for bird in birds:
+                game.check_collision(game.pipe_list, bird)
+            
+            alive_birds = genetic.check_alive()
+            game_active = if len(alive_birds) !=  0 
+            #todo 修改了顺序 我觉得应该也是没有问题的
+            display_birds(game, alive_birds)
             spwan_pipes(game)
-        
-            game.game_active = game.check_collision(game.pipe_list, bird)
 
             # 计算分数
             game.score += 0.01
