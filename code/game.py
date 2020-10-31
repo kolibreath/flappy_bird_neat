@@ -86,7 +86,7 @@ class Game:
 
     def check_collision(self, pipes, bird):
         for pipe in pipes:
-            if bird.bird_rect.colliderect(pipe):
+            if bird.bird_rect.colliderect(pipe[0]) or bird.bird_rect.colliderect(pipe[1]):
                 return False
 
         if bird.bird_rect.top <= -100 or bird.bird_rect.bottom >= self.screen_height - self.floor_height:
@@ -113,21 +113,25 @@ class Game:
         random_pipe_pos = random.choice(self.pipe_height)
         bottom_pipe = self.pipe_surface.get_rect(midtop=(self.screen_width, random_pipe_pos))
         top_pipe = self.pipe_surface.get_rect(midbottom=(self.screen_width, random_pipe_pos - 300))
-        return bottom_pipe, top_pipe
+        return (bottom_pipe, top_pipe)
 
     def move_pipes(self, pipes):
         for pipe in pipes:
             #向左边移动
-            pipe.centerx -= 5
+            pipe[0].centerx -= 5
+            pipe[1].centerx -= 5
         return pipes
 
 
     def draw_pipes(self, pipes):
         for pipe in pipes:
             # 生成朝上的管道
-            if pipe.bottom >= self.screen_height:
-                self.screen.blit(self.pipe_surface, pipe)
-            else:
-                #生成朝下的管道
-                flip_pipe = pygame.transform.flip(self.pipe_surface, False, True)
-                self.screen.blit(flip_pipe, pipe)
+            # if pipe.bottom >= self.screen_height:
+            #     self.screen.blit(self.pipe_surface, pipe)
+            # else:
+            #     #生成朝下的管道
+            #     flip_pipe = pygame.transform.flip(self.pipe_surface, False, True)
+            #     self.screen.blit(flip_pipe, pipe)
+            self.screen.blit(self.pipe_surface, pipe[0])
+            flip_pipe = pygame.transform.flip(self.pipe_surface, False, True)
+            self.screen.blit(flip_pipe, pipe[1])

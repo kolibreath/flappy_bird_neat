@@ -2,7 +2,20 @@ import pygame, sys, random
 from bird import Bird
 from game import Game
 
-
+# remove pipes from list that get out of the screen
+def remove_pipes(pipe_list):
+    for pipe_rect in pipe_list:
+        if pipe_rect[0].bottomright[0] < 0 or pipe_rect[1].bottomright[0] < 0:
+            pipe_list.remove(pipe_rect)
+ 
+# 计算两个柱子之间的终点
+def middle_of_pipes(pipe_list):
+    # in the begining the pipes are not generated completely
+    if len(pipe_list) == 0 : return -1
+    print(pipe_list)
+    top, bottom = pipe_list[0][1], pipe_list[0][0]
+    return (top.bottomright[1] + bottom.bottomright[1]) // 2
+    
 # where the game begins
 if __name__ == "__main__":
     
@@ -38,8 +51,12 @@ if __name__ == "__main__":
                 game.score = 0
 
             if event.type == game.SPAWNPIPE:
+                
                 if game.game_start:
-                    game.pipe_list.extend(game.create_pipe())
+                    game.pipe_list.append(game.create_pipe())
+                    remove_pipes(game.pipe_list)
+                    
+                    print(middle_of_pipes(game.pipe_list))
 
             if event.type == game.BIRDFLAP:
                 bird.bird_index += 1
