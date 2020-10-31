@@ -23,14 +23,15 @@ class Bird:
               './assets/yellowbird-midflap.png',
               './assets/yellowrd-upflap.png']]
     
-    def __init__(self, game):
+    def __init__(self, game, index):
         self.status = True # is status == True, this bird is alive
         index = random.choice(birds) # random different birds
         self.bird_downflap = pygame.transform.scale2x(pygame.image.load(index[0]).convert_alpha())
         self.bird_midflap = pygame.transform.scale2x(pygame.image.load(index[1]).convert_alpha())
         self.bird_upflap = pygame.transform.scale2x(pygame.image.load(index[2]).convert_alpha())
         
-        self.bird_index = 0
+        # which bird in the population
+        self.bird_index = index
         self.bird_movement = 0
         self.bird_frames = [self.bird_downflap, self.bird_midflap, self.bird_upflap]
         self.bird_surface = self.bird_frames[self.bird_index]
@@ -70,15 +71,25 @@ class Bird:
         new_bird_rect = new_surface.get_rect(center=(100, self.bird_rect.centery))
         return new_surface, new_bird_rect
 
-    # todo 
     # get two input params
     def get_inputs(self):
-        width, height = 0, 0
-        return width, height
+        result = middle_of_pipes(game.pipe_list)
+        pipe_x, pipe_y = result[0], result[1] 
+        
+        bird_x = self.topright[0]
+        bird_y = self.topright[1]
+        return pipe_x - bird_x, pipe_y - bird_y
 
     # fitness function
     def fitness(self, game):
         self.fitness = game.score
     
+    # output the middle of two points
 
-    
+
+    def middle_of_pipes(self, pipe_list):
+        # in the begining the pipes are not generated completely
+        if len(pipe_list) == 0:
+            return -1
+        top, bottom = pipe_list[0][1], pipe_list[0][0]
+        return (top.right ,(top.bottomright[1] + bottom.bottomright[1]) // 2)
