@@ -5,11 +5,11 @@ from genetic import Genetic
 
 def handle_events(game, genetic, birds):
     for event in pygame.event.get():
-           if event.type == pygame.QUIT:                  # quit the game
+            if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
 
-            if event.type == pygame.MOUSEBUTTONDOWN:       # fly the bird a bit
+            if event.type == pygame.MOUSEBUTTONDOWN:
                 if game.game_start == False:
                     game.game_start = True
 
@@ -31,21 +31,23 @@ def handle_events(game, genetic, birds):
 
             if event.type == game.SPAWNPIPE:
                 if game.game_start:
-                    game.pipe_list.extend(game.create_pipe())
+                    game.pipe_list.append(game.create_pipe())
+                    remove_pipes(game.pipe_list)
 
             # birds flap animation
             if event.type == game.BIRDFLAP:
                 # random choose some of the birds to display the animation
-                indices = random.shuffle(range(genetic.pop_size))
+                indices = random.shuffle([i for i in range(genetic.pop_size)])
                 for i in range(genetic.pop_size // 2):
                     bird = birds[i]
-                    bird.bird_index += 1
-                    bird.bird_index = bird.bird_index % len(bird.bird_frames)
+                    bird.bird_fly_index += 1
+                    bird.bird_fly_index = bird.bird_fly_index % len(bird.bird_frames)
                     bird.bird_surface, bird.bird_rect = bird.bird_animation()
 
 # show where the birds are 
 def display_birds(game,birds):
-    for bird in birds:
+    for bird_turple in birds: # bird_turple = (index, bird_instance)
+        bird = bird_turple[1] # bird_instance
         rotated_bird = bird.rotate_bird(bird.bird_surface) # set bird animation
         bird.bird_movement += game.gravity                 # bird falling
         bird.bird_rect.centery += int(bird.bird_movement) 
@@ -69,7 +71,7 @@ if __name__ == "__main__":
     game = Game()  # initialize Game instance
     game.start()  # set timer
     
-    genetic = Genetic(game, pop_size= 10 , generation= 30)
+    genetic = Genetic(game, pop_size= 1 , generation= 30)
     birds = genetic.init_pop()
     
     # Game Logic
@@ -86,11 +88,16 @@ if __name__ == "__main__":
 
         # one generation is not over
         if game.game_active and game.game_start:
+            genetic.run_GA()
             for bird in birds:
                 game.check_collision(game.pipe_list, bird)
             
             alive_birds = genetic.check_alive()
-            game_active = if len(alive_birds) !=  0 
+            if len(alive_birds) ==  0:
+                game_active = False
+            else:
+                game_active = True
+                
             #todo 修改了顺序 我觉得应该也是没有问题的
             display_birds(game, alive_birds)
             spwan_pipes(game)
@@ -111,5 +118,6 @@ if __name__ == "__main__":
             # todo 
             if game.generation == 30:
                 game.score_display('game_over', genetic)
+                sys.exit()
         pygame.display.update()
         game.clock.tick(120)

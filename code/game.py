@@ -83,7 +83,7 @@ class Game:
         if self.floor_x_pos <= - self.screen_width: # reset the floor tile
             self.floor_x_pos = 0
 
-     def check_collision(self, pipes, bird):
+    def check_collision(self, pipes, bird):
         for pipe in pipes:
             if bird.bird_rect.colliderect(pipe[0]) or bird.bird_rect.colliderect(pipe[1]):
                 bird.status = False
@@ -99,7 +99,7 @@ class Game:
         if game_state == 'main_game':
             # current generation
             generation_surface = self.font.render(f'Gen#: {str(genetic.generation)}', True, (255, 255, 255))
-            generation_rect = generation_surface.get_rect(center(self.screen_width // 2, 100))
+            generation_rect = generation_surface.get_rect(center = (self.screen_width // 2, 100))
             self.screen.blit(generation_surface, generation_rect)
             
             # the score for the bird which survive the longest

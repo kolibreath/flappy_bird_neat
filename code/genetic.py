@@ -11,15 +11,15 @@ class Genetic :
     def init_pop(self):
         self.pop_list = []
         for i in range(self.pop_size):
-            self.pop_list.append(Bird(game, i))
-        return pop_list
+            self.pop_list.append(Bird(self.game, i))
+        return self.pop_list
 
     # genetic algorithm frame for one time
     def run_GA(self):
         for bird in self.pop_list:
             if bird.status == False:
                 continue
-            train(bird)
+            self.train(bird)
             
     # fitness function 
     def fitness(self, bird):
@@ -33,12 +33,14 @@ class Genetic :
     # train one bird in one generation
     def train(self, bird):
         # iterate array
-        width, height = bird.get_inputs():
-        width = width.clone().detach().float()
+        # todo how to train
+        width, height = bird.get_inputs()
+        width =  width.clone().detach().float()
         height = height.clone().detach().float()
         
         # todo test if output is a double between [0, 1]    
         output = bird.net(width, height)
+        print(output)
         if output > 0.5:
             notice(bird_index)
                  
@@ -53,7 +55,8 @@ class Genetic :
         alive_birds = []
         for index, bird in enumerate(self.pop_list):
             if bird.status:
-                alive_birds.append(index)
+                alive_birds.append((index, bird))
+        return alive_birds
 
     # send event to notice a bird should fly up a bit
     def notice(self, bird_index):
