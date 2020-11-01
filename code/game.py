@@ -87,6 +87,7 @@ class Game:
         for pipe in pipes:
             if bird.bird_rect.colliderect(pipe[0]) or bird.bird_rect.colliderect(pipe[1]):
                 bird.status = False
+                bird.fitness = self.score
                 return False
 
         if bird.bird_rect.top <= -100 or bird.bird_rect.bottom >= self.screen_height - self.floor_height:

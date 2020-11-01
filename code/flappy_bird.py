@@ -26,7 +26,7 @@ def handle_events(game, genetic, birds):
                 game.pipe_list.clear()
 
                 genetic.reset()
-
+                genetic.generate_new_birds()
                 game.score = 0
 
             if event.type == game.SPAWNPIPE:
@@ -39,6 +39,7 @@ def handle_events(game, genetic, birds):
                 # random choose some of the birds to display the animation
                 indices = random.shuffle([i for i in range(genetic.pop_size)])
                 for i in range(genetic.pop_size // 2):
+                    # print(f'bird index {i}')
                     bird = birds[i]
                     bird.bird_fly_index += 1
                     bird.bird_fly_index = bird.bird_fly_index % len(bird.bird_frames)
@@ -71,33 +72,37 @@ if __name__ == "__main__":
     game = Game()  # initialize Game instance
     game.start()  # set timer
     
-    genetic = Genetic(game, pop_size= 1 , generation= 30)
-    birds = genetic.init_pop()
+    genetic = Genetic(game, pop_size= 10 , generation= 30)
+    genetic.pop_list = genetic.init_pop()
     
     # Game Logic
     while True:
+      
         game.screen.blit(game.bg_surface, (0, 0)) # draw background image 
-        game.draw_floor() # draw floor
+        game.draw_floor()  # draw floor
         
         # game is not started, right click the screen to start the game
         if game.game_start == False:
             game.screen.blit(game.game_start_surface, game.game_start_rect)
             
         # event loop
-        handle_events(game, genetic, birds)
+        handle_events(game, genetic, genetic.pop_list)
 
         # one generation is not over
         if game.game_active and game.game_start:
             genetic.run_GA()
-            for bird in birds:
+            for bird in genetic.pop_list:
                 game.check_collision(game.pipe_list, bird)
             
             alive_birds = genetic.check_alive()
+           
             if len(alive_birds) ==  0:
-                game_active = False
+                game.game_active = False
             else:
-                game_active = True
+                game.game_active = True
                 
+                
+        
             #todo 修改了顺序 我觉得应该也是没有问题的
             display_birds(game, alive_birds)
             spwan_pipes(game)
@@ -108,15 +113,16 @@ if __name__ == "__main__":
 
         # One generation over
         if game.game_active == False and game.game_start:
+
             if game.score > game.high_score:
                 high_score = game.score
             game.screen.blit(game.game_over_surface, game.game_over_rect)
             game.score_display('game_over', genetic)
             
-            game.generation += 1
+            genetic.generation += 1
             
             # todo 
-            if game.generation == 30:
+            if genetic.generation == 30:
                 game.score_display('game_over', genetic)
                 sys.exit()
         pygame.display.update()
