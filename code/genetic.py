@@ -1,5 +1,5 @@
 from bird import Bird
-import pygame
+import pygame, torch
 
 class Genetic :
   
@@ -35,20 +35,26 @@ class Genetic :
         # iterate array
         # todo how to train
         width, height = bird.get_inputs()
-        width =  width.clone().detach().float()
-        height = height.clone().detach().float()
         
-        # todo test if output is a double between [0, 1]    
-        output = bird.net(width, height)
-        print(output)
-        if output > 0.5:
-            notice(bird_index)
-                 
-        l = bird.loss(output, compute(self, bird))
-                 
-        bird.optimizer.zero_grad()
+        lr = 0.03
+        net = bird.linreg
+        loss = bird.squared_loss
+        input = torch.tensor([width, height]).float()
+        
+        # todo set y = 0.3
+        # result = bird.middle_of_pipes(self.game.pipe_list)
+        # y = [[result[0], result[1]]
+        y = 0.3
+        
+        l = loss(net(input, bird.w1, bird.w2, bird.b1, bird.b2), torch.tensor(y).float())
         l.backward()
-        bird.optimier.step()
+        bird.sgd([bird.w1, bird.w2, bird.b1, bird.b2], lr ,1)
+        
+        bird.w1.grad.data.zero_() 
+        bird.w2.grad.data.zero_() 
+        bird.b1.grad.data.zero_() 
+        bird.b2.grad.data.zero_()
+        
                              
     # check if all birds are dead and dead birds are not shown in the screen any longer
     def check_alive(self):
