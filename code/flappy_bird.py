@@ -12,7 +12,6 @@ def remove_pipes(pipe_list):
 def middle_of_pipes(pipe_list):
     # in the begining the pipes are not generated completely
     if len(pipe_list) == 0 : return -1
-    print(pipe_list)
     top, bottom = pipe_list[0][1], pipe_list[0][0]
     return (top.bottomright[1] + bottom.bottomright[1]) // 2
     
@@ -36,9 +35,12 @@ if __name__ == "__main__":
                 if game.game_start == False:
                     game.game_start = True
 
-                bird.bird_movement = 0
-                bird.bird_movement -= game.move_up
-
+                bird.bird_index += 1
+                bird.bird_index = bird.bird_index % len(bird.bird_frames)
+                bird.bird_surface, bird.bird_rect = bird.bird_animation()
+               
+                bird.jump()
+                
             # restart game
             if event.type == pygame.MOUSEBUTTONDOWN and game.game_active == False:
                 
@@ -46,7 +48,7 @@ if __name__ == "__main__":
                 game.pipe_list.clear()
                 
                 bird.bird_rect.center = (100, game.screen_height // 2)
-                bird.bird_movement = 0
+                bird.bird_y_incre = 0
                 
                 game.score = 0
 
@@ -56,12 +58,12 @@ if __name__ == "__main__":
                     game.pipe_list.append(game.create_pipe())
                     remove_pipes(game.pipe_list)
                     
-                    print(middle_of_pipes(game.pipe_list))
-
             if event.type == game.BIRDFLAP:
-                bird.bird_index += 1
-                bird.bird_index = bird.bird_index % len(bird.bird_frames)
-                bird.bird_surface, bird.bird_rect = bird.bird_animation()
+                # bird.bird_index += 1
+                # bird.bird_index = bird.bird_index % len(bird.bird_frames)
+                # bird.bird_surface, bird.bird_rect = bird.bird_animation()
+                bird.tick += 1
+                # a = 
             
         
 
@@ -72,11 +74,9 @@ if __name__ == "__main__":
        
         if game.game_active and game.game_start:
     
-            rotated_bird = bird.rotate_bird(bird.bird_surface) # set bird animation
-            bird.bird_movement += game.gravity                 # bird falling
-            bird.bird_rect.centery += int(bird.bird_movement) 
-            game.screen.blit(rotated_bird, bird.bird_rect)
-
+            rotated_bird = bird.rotate_bird() # set bird animation
+            bird.move_down_to(rotated_bird)
+            
             # Pipes
             game.pipe_list = game.move_pipes(game.pipe_list)
             game.draw_pipes(game.pipe_list)
@@ -93,6 +93,7 @@ if __name__ == "__main__":
             game.screen.blit(game.game_over_surface, game.game_over_rect)
             game.score_display('game_over')
 
+        
         # Floor
         game.draw_floor()
         

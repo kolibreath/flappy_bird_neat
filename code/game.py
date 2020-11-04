@@ -8,8 +8,6 @@ class Game:
     4. set timer for user event
     '''
   
-    
-   
     def __init__(self):
         pygame.init()
         
@@ -44,6 +42,8 @@ class Game:
         self.pipe_surface = pygame.image.load("./assets/pipe-green.png").convert()
         self.pipe_surface = pygame.transform.scale2x(self.pipe_surface)
 
+        self.pipe_vel = 5
+
         self.pipe_height = [400, 600, 800]
 
         self.font = pygame.font.Font("./assets/04B_19__.TTF", 40)
@@ -69,7 +69,7 @@ class Game:
         
     # member functions 
     def start(self):
-        pygame.time.set_timer(self.BIRDFLAP, 200)
+        # pygame.time.set_timer(self.BIRDFLAP, 100)
         pygame.time.set_timer(self.SPAWNPIPE, 1200)
       
 
@@ -118,8 +118,8 @@ class Game:
     def move_pipes(self, pipes):
         for pipe in pipes:
             #向左边移动
-            pipe[0].centerx -= 5
-            pipe[1].centerx -= 5
+            pipe[0].centerx -= self.pipe_vel
+            pipe[1].centerx -= self.pipe_vel
         return pipes
 
 
