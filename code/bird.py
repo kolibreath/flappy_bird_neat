@@ -25,7 +25,7 @@ class Bird:
         self.tick = 0 # jump once the tick set to zero
         
         self.tilt = 0 # the degree of tilt 
-        self.vel = -10.5
+        self.vel = -15
         
         self.status = True
    
@@ -43,33 +43,25 @@ class Bird:
     # bird jumping up
     def jump(self):
         self.tick = 0
+        self.bird_index += 1
+        self.bird_index = self.bird_index % len(self.bird_frames)
+        self.bird_surface, self.bird_rect = self.bird_animation()
         
         
     # bird moving downward to a destination
     def move_down_to(self, rotated_bird):
-        
-        if self.status == False:
-            return 
-        tick = self.tick
-        d = self.vel * tick  + 0.5*(3)*(tick)**2
-      
-        if d <= 0:
-            d =  -1
-        
+        self.tick += 1
+        d = self.vel * self.tick + 1.5*(self.tick)**2
+    
+        if d < 0:
+            d -=  2
+        if d < -10:
+            d = -10
+            
         if d >= 16:
             d = (d / abs(d)) * 16
         
         self.bird_rect.centery += d
-        # print(f'(tick = ) {tick} ( -self.game.pipe_vel )* tick { (- self.game.pipe_vel )* tick} 1.5 * (tick ** 2) {1.5 * (tick ** 2)}')
-        # print(d)
-       
-        # if d < 0 or self.bird_rect.centery < self.bird_rect.centery + 10:
-        #     if self.tilt <  self.MAX_ROTATION:
-        #        self.tilt = self.MAX_ROTATION
-        # else:
-        #     if self.tilt > -90:
-        #         self.tilt -= self.ROT_VEL
-        
         self.game.screen.blit(rotated_bird, self.bird_rect)
        
             

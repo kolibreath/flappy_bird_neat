@@ -94,10 +94,10 @@ class Game:
 
         return True
     
-    def score_display(self, game_state):
+    def score_display(self, game_state, gen):
         if game_state == 'main_game':
             score_surface = self.font.render(
-                str(int(self.score)), True, (255, 255, 255))
+                str(int(gen)), True, (255, 255, 255))
             score_rect = score_surface.get_rect(center=(self.screen_width // 2, 100))
             self.screen.blit(score_surface, score_rect)
         if game_state == 'game_over':
