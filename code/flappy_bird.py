@@ -1,6 +1,10 @@
 import pygame, sys, random
 from bird import Bird
 from game import Game
+import neat
+
+# generation
+generation = 0
 
 # remove pipes from list that get out of the screen
 def remove_pipes(pipe_list):
@@ -14,6 +18,39 @@ def middle_of_pipes(pipe_list):
     if len(pipe_list) == 0 : return -1
     top, bottom = pipe_list[0][1], pipe_list[0][0]
     return (top.bottomright[1] + bottom.bottomright[1]) // 2
+
+# set up config 
+def config(config_file):
+    config = neat.config.Config(neat.DefaultGenome, neat.DefaultReproduction,
+                                neat.DefaultSpeciesSet, neat.DefaultStagnation,
+                                config_file)
+    # create output in the terminal
+    output = neat.Population(config)
+    
+    output.add_reporter(neat.stdOutReporter(True))
+    stats = neat.StatisticsReporter()
+    output.add_reporter(stats)
+    
+    # run(function, generation)
+    winner = output.run(train, 50)
+    print("完成训练")
+
+# train: in this function, the image will be draw on the scree with the output of nerual network
+def train(genomes, config):
+    generation += 1
+    
+    birds = []
+    nets = []
+    ge = []
+    
+    for genome_id, genome in genomes:
+        genome.fitness = 0
+        net = net.nn.FeedForwardNetwork.create(genome, config)
+        nets.append(net)
+        birds.append(Bird(game))
+        ge.append(genome)
+    
+    
     
 # where the game begins
 if __name__ == "__main__":
@@ -22,6 +59,7 @@ if __name__ == "__main__":
     game.start()  # set timer
     bird = Bird(game)  # initialize one bird
     
+   
     
     # Game Logic
     while True:
