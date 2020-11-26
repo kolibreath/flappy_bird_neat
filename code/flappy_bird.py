@@ -34,7 +34,7 @@ def start(config_file, game):
     # run(function, generation)
     winner = output.run(train, 50)
    
-# train: in this function, the image will be draw on the scree with the output of nerual network
+# train: in this function, the image will be draw on the screen with the output of nerual network
 def train(genomes, config):
     global gen
     
@@ -51,9 +51,13 @@ def train(genomes, config):
         birds.append(Bird(game))
         ge.append(genome)
     
+    point = 0
+    
      # Game Logic
     while True and len(birds) != 0:
 
+        point += 0.0001
+        
         for event in pygame.event.get():
             if event.type == pygame.QUIT:                  # quit the game
                 pygame.quit()
@@ -87,7 +91,7 @@ def train(genomes, config):
             # increment fitness to every bird
             for i, bird in enumerate(birds):
                 
-                ge[birds.index(bird)].fitness += 0.05
+                ge[birds.index(bird)].fitness += 0.05 + point
                 # todo not rotated
                 if bird.status:
                     bird.move_down_to(bird.bird_surface)
